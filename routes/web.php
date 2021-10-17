@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BasicChartController;
+use App\Http\Controllers\OccupancyRateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,8 @@ Route::get('/basic-chart/line', [BasicChartController::class, 'lineChart']);
 Route::get('/basic-chart/area', [BasicChartController::class, 'areaChart']);
 Route::get('/basic-chart/heat-map', [BasicChartController::class, 'heatMapChart']);
 Route::get('/basic-chart/radar', [BasicChartController::class, 'radarChart']);
+
+Route::get('/occupancy-rate', [OccupancyRateController::class, 'index']);
 
 Auth::routes();
 
