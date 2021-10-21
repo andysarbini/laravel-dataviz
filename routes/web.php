@@ -44,3 +44,5 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/occupancy-rate/room', [OccupancyRateController::class, 'room']);
+
+Route::get('/occupancy-rate/bed', [OccupancyRateController::class, 'bed']);
