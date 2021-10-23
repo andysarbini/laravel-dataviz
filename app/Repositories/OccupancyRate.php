@@ -53,7 +53,7 @@ ORDER BY t.year, t.month
 
     $data = collect($data ? $data : []);
 
-    return $data;
+    return $this->fillMonth($data, $year);
     }
 
     public function byQuarter($year = NULL)
@@ -138,7 +138,7 @@ ORDER BY t.year, t.month
             ");
             
         $data = collect($data ? $data : []);
-        return $data;
+        return $this->fillYear($data, $start_year, $end_year);
         }
 
     public function byMonthByRoom(string $category, int $year = NULL)
@@ -186,7 +186,7 @@ ORDER BY t.year, t.month
 
         $data = collect($data ? $data: []);
 
-        return $data;
+        return $this->fillMonth($data, $year);
     }
 
     public function byQuarterByRoom(string $category, int $year = NULL)
@@ -273,7 +273,7 @@ ORDER BY t.year, t.month
 
         $data = collect($data ? $data :[]);
 
-        return $data;
+        return $this->fillYear($data, $start_year, $end_year, $category);
     }
 
     public function byMonthByBed(string $bed_type, int $year = NULL)
@@ -319,7 +319,7 @@ ORDER BY t.year, t.month
 
         $data = collect($data ? $data :[]);
 
-        return $data;
+        return $this->fillMonth($data, $year);
     }
 
     public function byQuarterByBed(string $bed_type, int $year = NULL)
@@ -407,7 +407,54 @@ ORDER BY t.year, t.month
 
         $data = collect($data ? $data :[]);
 
-        return $data;
+        return $this->fillYear($data, $start_year, $end_year, NULL, $bed_type);
+    }
+
+    protected function fillYear(Collection $data, $start_year, $end_year, $category = NULL, $bed_type = NULL)
+    {
+        $filledData = collect([]);
+
+        for($year = $start_year; $year <= $end_year; $year++)
+        {
+            $byYear = function($item) use ($year)
+            {
+                return $item->year == $year;
+            };
+
+            $yearData = $data->pluck("year")->contains($year)
+                ? $data->filter($byYear)->first()
+                : [
+                    "year" => $year,
+                    "occupancy_rate" => 0,
+                    "category" => $category,
+                    "bed" => $bed_type
+                ];
+
+            $filledData->push($yearData);
+        }
+
+        return $filledData;
+    }
+
+    protected function fillMonth(Collection $data, $year)
+    {
+        $filledData = collect([]);
+
+        for($month = 1; $month <= 12; $month++)
+        {
+            $byMonth = function($item) use($month)
+            {
+                return $item->month == $month;
+            };
+
+            $monthData = $data->pluck('month')->contains($month)
+                ? $data->filter($byMonth)->first()
+                : ["month" => $month, "occupancy_rate" => 0, "year" => $year];
+
+            $filledData->push($monthData);
+        }
+
+        return $filledData;
     }
 
 }

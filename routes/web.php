@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\BasicChartController;
+use App\Http\Controllers\DemographyController;
 use App\Http\Controllers\OccupancyRateController;
+use App\Repositories\Demography;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,3 +48,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/occupancy-rate/room', [OccupancyRateController::class, 'room']);
 
 Route::get('/occupancy-rate/bed', [OccupancyRateController::class, 'bed']);
+
+Route::get('/demography', [DemographyController::class, 'index']);
+
+Route::get('/demography/guest-type', [DemographyController::class, 'byGuestType']);
