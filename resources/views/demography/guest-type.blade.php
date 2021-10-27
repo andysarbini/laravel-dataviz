@@ -33,7 +33,90 @@
             </div>
         </div>
     </div>
+    
+    <div class="row my-5">
+        <div class="col-md-6">
+            <div class="bg-white rounded p-2">
+                <h2 class="p-2">Quarterly</h2>
+                {{-- grafik quarterly --}}
+                <form action="{{ \Request::url() }}" class="form-inline p-2">               
+                    <input type="hidden" name="start" value="{{ $start_year }}">
+                    <input type="hidden" name="end" value="{{ $end_year }}">
+                    <input type="hidden" name="month_year" value="{{ $month_year }}">
+
+                    <div class="form-group">
+                        <select name="quarter_year" id="" class="form-control">
+                            @for($year = $current_year; $year >= $begin_year; $year--)
+                                <option value="{{ $year }}" {{ $year == $quarter_year ? "selected" : ""}}> {{ $year }}</option>
+                            @endfor                               
+                        </select>
+                    </div>
+                    <button class="ml-3 btn btn-primary"> Go </button>
+                </form>
+                {!! $dg_by_type_by_quarter->container() !!}
+
+  
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="bg-white rounded p-2">
+                <h2 class="p-2">Year on Year</h2>
+                {{-- grafik year on year --}}
+                <form action="{{ Request::url() }}" class="form-inline p-2">
+                    <input type="hidden" name="quarter_year" value="{{ $quarter_year }}">
+                    <input type="hidden" name="month_year" value="{{ $month_year }}">
+                    
+                    <div class="form-group">
+                        <select name="start" id="" class="form-control">
+                            @for($year = $current_year; $year >= $begin_year; $year--)
+                                <option value="{{ $year }}" {{ $year == $start_year ? "selected" : ""}}> {{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="px-3">s.d</div>
+                    <div class="form-group">
+                        <select name="end" id="" class="form-control">
+                            @for($year = $current_year; $year >= $begin_year; $year--)
+                            <option value="{{ $year }}" {{ $year == $end_year ? "selected" : ""}}> {{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <button class="ml-3 btn btn-primary"> Go </button>
+                </form>
+                {!! $dg_by_type_by_year->container() !!}
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-5">
+        <div class="col-md-12">
+            <div class="bg-white rounded p-2">
+                <h2 class="p-2">Monthly</h2>
+                {{-- grafik monthly --}}
+                <form action="{{ \Request::url() }}" class="form-inline p-2">
+                    <input type="hidden" name="start" value="{{ $start_year }}">
+                    <input type="hidden" name="end" value="{{ $end_year }}">
+                    <input type="hidden" name="quarter_year" value="{{ $quarter_year }}">
+
+                    <div class="form-group">
+                        <select name="month_year" id="" class="form-control">
+                            @for($year = $current_year; $year >= $begin_year; $year--)
+                                <option value="{{ $year }}" {{ $year == $month_year ? "selected" : "" }}> {{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <button class="ml-3 btn btn-primary"> Go </button>
+                </form>
+                {!! $dg_by_type_by_month->container() !!}
+            </div>
+        </div>
+    </div>
+
     <script src = "{{ LarapexChart::cdn() }}"></script>
     {{ $dg_by_type->script() }}
     {{ $dg_by_type_donut->script() }}
+    {{ $dg_by_type_by_month->script() }}
+    {{ $dg_by_type_by_quarter->script() }}
+    {{ $dg_by_type_by_year->script() }}
+
 @endsection

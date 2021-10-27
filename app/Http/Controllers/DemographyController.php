@@ -7,6 +7,8 @@ use App\Repositories\Demography;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
 
+use App\Models\Guest;
+
 class DemographyController extends Controller
 {
     //
@@ -86,6 +88,7 @@ class DemographyController extends Controller
 
     public function byGuestType(Request $request)
     {
+        // return $this->demography->byQuarterByGuestType('couple', 2020);
         $start_year = $request->start;
         $end_year = $request->end;
         $quarter_year = $request->quarter_year;
@@ -117,11 +120,34 @@ class DemographyController extends Controller
         $dg_by_type_donut->setLabels($this->demography->byGuestType()->pluck('guest_type')->toArray());
         $dg_by_type_donut->setTitle("Guest by Age Range");
 
+        $dg_by_type_by_month = (new LarapexChart)->barChart();
+        $dg_by_type_by_month->setXAxis(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Okt", "Nov", "Des"]);
+        
+        $dg_by_type_by_quarter = (new LarapexChart)->barChart();
+        $dg_by_type_by_quarter->setXAxis(["Q1", "Q2", "Q3", "Q4"]);
+
+        $dg_by_type_by_year = (new LarapexChart)->barChart();
+        $dg_by_type_by_year->setXAxis($year_ranges);
+        
+        $guest_types = Guest::distinct()->get(['type'])->pluck('type')->toArray();
+
+        for($i = 0; $i < count($guest_types); $i++) {
+            // dapatkan nilai dari guest_type saat ini / current
+            $guest_type = $guest_types[$i];
+            $dg_by_type_by_month->addData($guest_type, $this->demography->byMonthByGuestType($guest_type, $month_year)->pluck('count')->toArray());
+            $dg_by_type_by_quarter->addData($guest_type, $this->demography->byQuarterByGuestType($guest_type, $quarter_year)->pluck('count')->toArray());
+            $dg_by_type_by_year->addData($guest_type, $this->demography->byYearByGuestType($guest_type, $start_year, $end_year)->pluck('count')->toArray());
+
+        }
+
         return view(
             'demography.guest-type',
             compact(
                 'dg_by_type',
-                'dg_by_type_donut'
+                'dg_by_type_donut',
+                'dg_by_type_by_month',
+                'dg_by_type_by_quarter',
+                'dg_by_type_by_year'
             )
         );
     }
