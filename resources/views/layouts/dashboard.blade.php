@@ -35,6 +35,18 @@
                         <a href="{{ url('/demography/origin') }}">By Origin</a>
                     </div>
                 </div>
+
+                <div class="mb-3">
+                    <div class="bg-secondary text-white p-2 mb-2 rounded">
+                        Behaviour
+                    </div>
+                    <div class="bg-light p-1 rounded">
+                        <a href="{{ url('/behaviour/rooms') }}">Room Selection</a>
+                    </div>
+                    <div class="bg-light p-1 rounded">
+                        <a href="{{ url('/behaviour/duration') }}">Stay Duration</a>
+                    </div>
+                </div>
     
             </div>
     
