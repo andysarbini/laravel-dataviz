@@ -55,6 +55,8 @@ Route::get('/demography', [DemographyController::class, 'index']);
 
 Route::get('/demography/guest-type', [DemographyController::class, 'byGuestType']);
 
+Route::get('/demography/origin', [DemographyController::class, 'byOrigin']);
+
 Route::get('/behaviour/rooms', [BehaviourController::class, 'rooms']);
 
 Route::get('/behaviour/duration', [BehaviourController::class, 'duration']);

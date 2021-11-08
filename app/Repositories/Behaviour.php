@@ -19,7 +19,22 @@ class Behaviour {
             $data = $data->whereYear('start_date', '=', $year);
         }
 
-        return $data->get();
+        $data =  $data->get();
+
+        $allCount = $data->sum('count');
+
+        $addPercentage = function($item) use ($allCount) {
+            if($allCount == 0) {
+                $item->percentage = 0;
+            } else {
+                $item->percentage = $item->count / $allCount * 100;
+                $item->percentage = number_format((float)$item->percentage, 2);
+            }
+
+            return $item;
+        };
+
+        return $data->map($addPercentage);
     }
 
     public function roomsByGuestOrigin(string $category = '', int $year = NULL)
@@ -137,7 +152,22 @@ class Behaviour {
             $data = $data->whereYear('start_date', '=', $year);
         }
 
-        return $data->get();
+        $data = $data->get();
+        
+        $allCount = $data->sum('count');
+
+        $addPercentage = function($item) use ($allCount) {
+            if($allCount == 0) {
+                $item->percentage = 0;
+            } else {
+                $item->percentage = $item->count / $allCount * 100;
+                $item->percentage = number_format((float)$item->percentage, 2);
+            }
+
+            return $item;
+        };
+
+        return $data->map($addPercentage);
     }
 
     public function durationByOrigin(string $duration, int $year = NULL)

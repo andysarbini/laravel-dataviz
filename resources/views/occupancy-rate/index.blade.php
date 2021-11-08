@@ -35,8 +35,8 @@
                 @endfor
             </select>
         </div>
-        <button class="ml-3 btn btn-primary"> Go </button> <br>
-    </form>
+        <button class="ml-3 btn btn-primary"> Go </button> 
+    </form><br>
     <div class="row mb-5">
         <div class="col-md-6">
             <div class="bg-white p-2 rounded">

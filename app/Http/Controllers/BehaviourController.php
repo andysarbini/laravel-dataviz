@@ -25,10 +25,12 @@ class BehaviourController extends Controller
         // return $this->behaviour->rooms(2016);
         $year = $request->year;
 
+        $rooms_overview_data = $this->behaviour->rooms($year);
+
         $rooms_overview = (new LarapexChart)->donutChart();
         $rooms_overview->setTitle("Room Selection Overview");
-        $rooms_overview->addData($this->behaviour->rooms($year)->pluck('count')->toArray());
-        $rooms_overview->setLabels($this->behaviour->rooms($year)->pluck('room_category')->toArray());
+        $rooms_overview->addData($rooms_overview_data->pluck('count')->toArray());
+        $rooms_overview->setLabels($rooms_overview_data->pluck('room_category')->toArray());
 
         $guest_origins = Guest::distinct()->get('origin')->pluck('origin')->toArray();
         $rooms_category = Room::distinct()->orderBy('category')->get('category')->pluck('category')->toArray();
@@ -63,7 +65,8 @@ class BehaviourController extends Controller
                 'rooms_overview',
                 'rooms_by_guest_origin',
                 'rooms_by_age',
-                'rooms_by_guest_type'
+                'rooms_by_guest_type',
+                'rooms_overview_data'
             )
         );
     }
@@ -76,10 +79,12 @@ class BehaviourController extends Controller
             return "$dur night(s)";
         };
 
+        $duration_overview_data = $this->behaviour->duration($year);
+
         $duration_overview = (new LarapexChart)->donutChart();
         $duration_overview->setTitle('Stay Duration Overview');
-        $duration_overview->addData($this->behaviour->duration($year)->pluck('count')->toArray());
-        $duration_overview->setLabels($this->behaviour->duration($year)->pluck('duration')->map($addNights)->toArray());
+        $duration_overview->addData($duration_overview_data->pluck('count')->toArray());
+        $duration_overview->setLabels($duration_overview_data->pluck('duration')->map($addNights)->toArray());
 
         $duration_by_guest_origin = (new LarapexChart)->barChart();
         $duration_by_guest_origin->setTitle('Stay Duration By Guest Origin');
@@ -118,7 +123,8 @@ class BehaviourController extends Controller
                 'duration_overview',
                 'duration_by_guest_origin',
                 'duration_by_age',
-                'duration_by_guest_type'
+                'duration_by_guest_type',
+                'duration_overview_data'
             )
         );
     }

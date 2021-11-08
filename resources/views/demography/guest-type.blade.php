@@ -17,6 +17,27 @@
 @endphp
 
 @section('main-content')
+
+    <div class="row">
+        <h2 class="p-3">Demography By Guest Type</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-center pb-5">
+                @foreach ($dg_by_type_data as $item)
+                    <div class="d-inline-block bg-white m-2 rounded text-center py-2 px-5">
+                        <div class="h6">
+                            {{ $item->guest_type }}
+                        </div>
+                        <div class="h3">
+                            {{ $item->percentage }}%
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="bg-white rounded p-2">

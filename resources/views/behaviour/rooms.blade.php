@@ -12,6 +12,24 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <h1>Room Selection</h1>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="text-center pb-5">
+                        @foreach ($rooms_overview_data as $item)
+                            <div class="d-inline-block bg-white m-2 rounded text-center py-2 px-5">
+                                <div class="h6">
+                                    {{ $item->room_category }}
+                                </div>
+                                <div class="h3">
+                                    {{ $item->percentage }}%
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
             <form class="form-inline" action="{{ \Request::url() }}" method="get">
                 <select name="year" class="form-control mr-2" id="">
                     <option value="" {{ NULL == $year ? "selected" : "" }}>All time</option>

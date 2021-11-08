@@ -33,11 +33,27 @@ class Demography
 
         $data = collect($data ? $data :[]);
 
+        $allCount = $data->sum('count');
+
+        $addPercentage = function($item) use($allCount) {
+            if($allCount == 0) {
+                $item->percentage = 0;
+            } else {
+                $item->percentage = $item->count / $allCount * 100;
+                $item->percentage = number_format((float)$item->percentage, "2");
+            }
+            return $item;
+        };
+
+        $data = $data->map($addPercentage);
+
         return $data;
     }
 
     public function byMonthByAge(string $age_range = "", int $year = NULL)
     {
+        IF(NULL == $year) $year = date("Y");
+
         $data = DB::select("
         SELECT
             YEAR(start_date) year,
@@ -89,9 +105,9 @@ class Demography
                 WHEN guest_age >= 60 THEN '> 60'
                 WHEN guest_age IS NULL THEN 'Not Filled In (NULL)'
             END as age_range
-        FROM bookings
-    ) bookings
-    WHERE age_range = '$age_range' AND YEAR(start_date) = $year
+            FROM bookings
+            ) bookings
+        WHERE age_range = '$age_range' AND YEAR(start_date) = $year
             GROUP BY year, quarter, age_range
             ORDER BY year, quarter, age_range
         ");
@@ -146,11 +162,28 @@ class Demography
 
         $data = collect($data ? $data : []);
 
+        $allCount = $data->sum('count');
+
+        $addPercentage = function($item) use($allCount) {
+            if($allCount == 0) {
+                $item->percentage = 0;
+            } else {
+                $item->percentage = $item->count / $allCount * 100;
+                $item->percentage = number_format((float)$item->percentage, "2");
+            }
+            return $item;
+        };
+
+        $data = $data->map($addPercentage);
+
         return $data;
     }
 
     public function byMonthByGuestType(string $type = '', int $year = NULL)
     {
+
+        IF(NULL == $year) $year = date("Y");
+
         $data = DB::select("
         SELECT
             YEAR(start_date) year,
@@ -243,6 +276,82 @@ class Demography
         });
 
         return $result;
+    }
+
+    public function byOrigin()
+    {
+        $data = DB::select("
+            SELECT
+                guest_origin,
+                COUNT(id) count
+            FROM bookings
+            GROUP BY guest_origin
+            ORDER BY guest_origin
+        ");
+
+        $data = collect($data ? $data : []);
+
+        return $data;
+    }
+
+    public function byMonthByOrigin(string $origin = "", int $year = NULL)
+    {
+        IF(NULL == $year) $year = date("Y");
+
+        $data = DB::select("
+            SELECT
+                YEAR(start_date) year,
+                MONTH(start_date) month,
+                guest_origin,
+                COUNT(id) count
+            FROM bookings
+            WHERE guest_origin = '$origin' AND YEAR(start_date) = $year
+            GROUP BY year, month, guest_origin
+            ORDER BY year, month, guest_origin
+        ");
+
+        $data = collect($data ? $data : []);
+
+        // return $data;
+        return $this->fillMonth($data, $year);
+    }
+
+    public function byQuarterByOrigin(string $origin = '', int $year = NULL)
+    {
+        $data = DB::select("
+        SELECT
+            YEAR(start_date) year,
+            QUARTER(start_date) quarter,
+            guest_origin,
+            COUNT(id) count
+        FROM bookings
+        WHERE guest_origin = '$origin' AND YEAR(start_date) = $year
+        GROUP BY year, quarter, guest_origin
+        ORDER BY year, quarter, guest_origin
+        ");
+
+        $data = collect($data ? $data : []);
+
+        return $data;
+    }
+
+    public function byYearByOrigin(string $origin= '', int $start_year = NULL, int $end_year = NULL)
+    {
+        $data = DB::select("
+        SELECT
+            YEAR(start_date) year,
+            guest_origin,
+            COUNT(id) count
+        FROM bookings
+        WHERE guest_origin = '$origin' AND YEAR(start_date) BETWEEN $start_year AND $end_year
+        GROUP BY year, guest_origin
+        ORDER BY year, guest_origin
+        ");
+
+        $data = collect($data ? $data : []);
+
+        // return $data;
+        return $this->fillYear($data, $start_year, $end_year);
     }
 
 }
